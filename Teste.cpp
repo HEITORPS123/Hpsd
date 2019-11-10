@@ -4,28 +4,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "tupla.h"
 
 using std::cout;		using std::cin;        using std::multimap;
 using std::endl;		using std::vector;
 using std::string;		using std::ifstream;	
 
 vector<char> data;
-
-// Declaração da classe do índice
-class Tupla{
-    public:
-    Tupla(string id):docid_(id),freq_(1){};
-    int Frequencia(void){ return freq_;};
-    string Get_id(void){return docid_; };
-    void operator++(int);
-    Tupla operator*();
-    
-    private:
-    string docid_;
-    int freq_;
-};
-
-// -----------------------------------------
 
 void ler_arquivos(string Nome_arquivo)
 {
@@ -87,12 +72,4 @@ int main(int argc,char* argv[]){
     Criar_indice();
     cout << endl;
     return 0;
-}
-
-Tupla Tupla::operator*(void){
-    return *this;
-}
-
-void Tupla::operator++(int){
-    freq_++;
 }
