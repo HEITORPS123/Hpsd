@@ -4,72 +4,88 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include "tupla.h"
+// ambos utilizados para vasculhar a pasta Documentos
+#include <filesystem>
+namespace fs = std::filesystem;
 
-using std::cout;		using std::cin;        using std::multimap;
-using std::endl;		using std::vector;
+using std::cout;		using std::cin;        	using std::multimap;
+using std::endl;		using std::vector;		using std::remove;
 using std::string;		using std::ifstream;	
 
-vector<char> data;
-
-void ler_arquivos(string Nome_arquivo)
+void ler_arquivos(string Nome_arquivo, vector<char>& data)
 {
-    int tamanho = 0;
-    ifstream arq(Nome_arquivo);
-    string linha;
-    
-    // Loop que pega todas as linhas do documento e retira os caracteres especiais.
-    while(getline(arq,linha))
+	ifstream arq(Nome_arquivo);
+	string linha;
+
+	// Loop que pega todas as linhas do documento e retira os caracteres especiais.
+	while(getline(arq,linha))
 	{
-        for(int i = 0; i < linha.size(); i++)
-            if((linha[i] != '-') && (linha[i] != ',') && 
-							(linha[i] != '!') && (linha[i] != '.') && (linha[i] != '?'))
-                data.push_back(tolower(linha[i]));
-        data.push_back(' ');
+		for(int i = 0; i < (int)linha.size(); i++)
+			if((linha[i] != '-') && (linha[i] != ',') && 
+					(linha[i] != '!') && (linha[i] != '.') && (linha[i] != '?') && (linha[i] != '\n'))
+				data.push_back(tolower(linha[i]));
+		data.push_back(' ');
 	}
 
-    for(int i = 0; i < data.size(); i++)
-        cout << data[i];
-
-    cout << endl;
+	arq.close();
 }
 
-void Criar_indice(){
-    multimap<string,Tupla*> Indice;
-    char *temp,*vetor_data;
-    string palavra,documento_nome;
-    int num_documentos;
+void criar_indice(multimap<string,Tupla*> Indice)
+{
+   	// pega o caminho (path) de todos os arquivos dentro da pasta Documentos e coloca no vetor documentos_nomes
+  	vector<string> documentos_nomes;
+   	string path = "Documentos/";
+   	for (const auto & entry : fs::directory_iterator(path))
+		documentos_nomes.push_back(entry.path());
+	
+	// loop que passa uma vez por cada documento dentro da pasta Documentos
+	int num_documento = 0;
+	while (num_documento < (int)documentos_nomes.size())
+	{
+	   	// lê um documento	
+		vector<char> data;
+	   	ler_arquivos(documentos_nomes[num_documento], data);
 
-    vetor_data = new char[data.size() + 1];
-    for(int i = 0;i < data.size();i++){
-        vetor_data[i] = data[i];
-    }
-    
-    vetor_data[data.size()] = '\0';
+		// passa os dados do vetor para um ponteiro de char chamado vetor_data
+  		char *temp, *vetor_data;
+		vetor_data = new char[data.size() + 1];
+	   	for (int i = 0; i < (int)data.size(); i++)
+			vetor_data[i] = data[i];
 
-    temp = strtok(vetor_data," ");
-    while (temp)
-    {
-        palavra = temp;
-        if(Indice.find(palavra) == Indice.end()){
-            Indice.insert(make_pair(palavra,new Tupla(documento_nome))); //Separa as palavras pelo " " entre cada uma;
-        }else{
-            (*((Indice.find(palavra))->second))++;      // Meio confuso, mas basicamente , se a palavra já foi inserida no índice, chama função Tupla++ (incrementa frequência).
-        }
-        temp = strtok(NULL," ");
-    }
+	   	vetor_data[data.size()] = '\0';
 
-    cout << "Palavra    |   Frequencia" << endl;
-    for(auto i = Indice.begin();i != Indice.end();i++){
-        cout << i->first << "    " << (i->second)->Frequencia() << endl;    
-    }
-    cout << endl;
+		// remove os '\n' do vetor de caracteres
+		*remove(vetor_data, vetor_data+strlen(vetor_data), '\n') = '\0';
+
+		// loop que preenche o índice
+	   	temp = strtok(vetor_data," ");
+	   	while (temp)
+	   	{
+		   	string palavra = temp;
+			// se a palabra não foi encontrada no índice
+			if (Indice.find(palavra) == Indice.end())
+				// adicione uma entrada no multimap do tipo palavra -> (nome do documento, frequencia = 1)
+				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));        
+			// mas caso ela tenha sido encontrada
+			else
+				// chama função Tupla++ (incrementa frequência)
+				++(*((Indice.find(palavra))->second));
+			temp = strtok(NULL," ");
+	   	}
+		num_documento++;
+	}
+	
+	cout << "Palavra | Frequencia" << endl;
+	for(auto it = Indice.begin(); it != Indice.end(); it++)
+		cout << it->first << "\t\t\t" << (it->second)->Get_id() << ", " << (it->second)->Frequencia() << endl;
+
 }
 
-int main(int argc,char* argv[]){
-    string Arq = "q1.txt";
-    ler_arquivos(Arq);
-    Criar_indice();
+int main(){
+	multimap<string,Tupla*> Indice;
+    criar_indice(Indice);
     cout << endl;
     return 0;
 }
