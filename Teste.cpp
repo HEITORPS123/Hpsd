@@ -64,11 +64,14 @@ void criar_indice(multimap<string,Tupla*> Indice)
 	   	while (temp)
 	   	{
 		   	string palavra = temp;
-			// se a palabra não foi encontrada no índice
+			// se a palavra não foi encontrada no índice
 			if (Indice.find(palavra) == Indice.end())
 				// adicione uma entrada no multimap do tipo palavra -> (nome do documento, frequencia = 1)
 				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));        
-			// mas caso ela tenha sido encontrada
+			// caso a palavra tenha sido encontrada, mas em outro documento
+			else if (((Indice.find(palavra))->second)->Get_id() != documentos_nomes[num_documento])
+				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento]))); 
+			// incrementa a frequencia da palavra no arquivo atual
 			else
 				// chama função Tupla++ (incrementa frequência)
 				++(*((Indice.find(palavra))->second));
@@ -77,10 +80,9 @@ void criar_indice(multimap<string,Tupla*> Indice)
 		num_documento++;
 	}
 	
-	cout << "Palavra | Frequencia" << endl;
+	cout << "Palavra\t\t |\t Frequencia" << endl;
 	for(auto it = Indice.begin(); it != Indice.end(); it++)
 		cout << it->first << "\t\t\t" << (it->second)->Get_id() << ", " << (it->second)->Frequencia() << endl;
-
 }
 
 int main(){
