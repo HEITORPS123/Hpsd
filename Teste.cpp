@@ -7,8 +7,6 @@
 #include <algorithm>
 #include "tupla.h"
 // ambos utilizados para vasculhar a pasta Documentos
-#include <filesystem>
-namespace fs = std::filesystem;
 
 using std::cout;		using std::cin;        	using std::multimap;
 using std::endl;		using std::vector;		using std::remove;
@@ -36,9 +34,9 @@ void criar_indice(multimap<string,Tupla*> Indice)
 {
    	// pega o caminho (path) de todos os arquivos dentro da pasta Documentos e coloca no vetor documentos_nomes
   	vector<string> documentos_nomes;
-   	string path = "Documentos/";
-   	for (const auto & entry : fs::directory_iterator(path))
-		documentos_nomes.push_back(entry.path());
+	documentos_nomes.push_back("q1.txt");
+	documentos_nomes.push_back("q2.txt");
+	documentos_nomes.push_back("q3.txt");
 	
 	// loop que passa uma vez por cada documento dentro da pasta Documentos
 	int num_documento = 0;
@@ -69,12 +67,19 @@ void criar_indice(multimap<string,Tupla*> Indice)
 				// adicione uma entrada no multimap do tipo palavra -> (nome do documento, frequencia = 1)
 				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));        
 			// caso a palavra tenha sido encontrada, mas em outro documento
-			else if (((Indice.find(palavra))->second)->Get_id() != documentos_nomes[num_documento])
-				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento]))); 
-			// incrementa a frequencia da palavra no arquivo atual
-			else
-				// chama função Tupla++ (incrementa frequência)
-				++(*((Indice.find(palavra))->second));
+			else{ //A mudança vai daqui -----------------------------
+				bool achou = false;
+				auto range = Indice.equal_range(palavra);
+				for(auto i = range.first;i != range.second;i++){
+					if(((i->second)->Get_id()) == documentos_nomes[num_documento]){
+						++(*(i->second));   // incrementa a frequencia da palavra no arquivo atual
+						achou = true;
+					}
+				}
+				if(achou == false){
+					Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));
+				}
+			} // Até aqui----------------------------------------------
 			temp = strtok(NULL," ");
 	   	}
 		num_documento++;
@@ -84,6 +89,22 @@ void criar_indice(multimap<string,Tupla*> Indice)
 	for(auto it = Indice.begin(); it != Indice.end(); it++)
 		cout << it->first << "\t\t\t" << (it->second)->Get_id() << ", " << (it->second)->Frequencia() << endl;
 }
+
+//Mudança começa aqui================================================
+void obter_coordenadas(multimap<string,Tupla*> Indice,char* query){
+	char* temp;
+	int tf;
+	double idf,W;
+	
+	temp = strtok(query," ");
+	while(temp)
+	{
+		string palavra = temp;
+		idf = log10(((int)num_documento + 1)/Indice.count(palavra));
+		W = ((Indice.find(palavra)).Frequencia())*idf;
+	}
+}
+//Termina aqui=======================================================
 
 int main(){
 	multimap<string,Tupla*> Indice;
