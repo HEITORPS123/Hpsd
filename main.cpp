@@ -7,7 +7,6 @@
 #include <map>
 #include <algorithm>
 #include "tupla.h"
-// ambos utilizados para vasculhar a pasta Documentos
 
 using std::cout;		using std::cin;        	using std::multimap;
 using std::endl;		using std::vector;		using std::remove;
@@ -35,9 +34,9 @@ int criar_indice(multimap<string,Tupla*>& Indice)
 {
    	// pega o caminho (path) de todos os arquivos dentro da pasta Documentos e coloca no vetor documentos_nomes
   	vector<string> documentos_nomes;
-	documentos_nomes.push_back("q1.txt");
-	documentos_nomes.push_back("q2.txt");
-	documentos_nomes.push_back("q3.txt");
+	documentos_nomes.push_back("Documentos/q1.txt");
+	documentos_nomes.push_back("Documentos/q2.txt");
+	documentos_nomes.push_back("Documentos/q3.txt");
 	
 	// loop que passa uma vez por cada documento dentro da pasta Documentos
 	int num_documento = 0;
@@ -68,32 +67,33 @@ int criar_indice(multimap<string,Tupla*>& Indice)
 				// adicione uma entrada no multimap do tipo palavra -> (nome do documento, frequencia = 1)
 				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));        
 			// caso a palavra tenha sido encontrada, mas em outro documento
-			else{ //A mudança vai daqui -----------------------------
-				bool achou = false;
+			else
+			{
+				bool found = false;
 				auto range = Indice.equal_range(palavra);
-				for(auto i = range.first;i != range.second;i++){
-					if(((i->second)->Get_id()) == documentos_nomes[num_documento]){
+				for (auto i = range.first; i != range.second; i++)
+					if (((i->second)->Get_id()) == documentos_nomes[num_documento])
+					{
 						++(*(i->second));   // incrementa a frequencia da palavra no arquivo atual
-						achou = true;
+						found = true;
 					}
-				}
-				if(achou == false){
+				if (found == false)
 					Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));
-				}
-			} // Até aqui----------------------------------------------
+			}
 			temp = strtok(NULL," ");
 	   	}
 		num_documento++;
 	}
 	
 	cout << "Palavra\t\t |\t Frequencia" << endl;
-	for(auto it = Indice.begin(); it != Indice.end(); it++)
+	for (auto it = Indice.begin(); it != Indice.end(); it++)
 		cout << it->first << "\t\t\t" << (it->second)->Get_id() << ", " << (it->second)->Frequencia() << endl;
+	
 	return num_documento;
 }
 
-//Mudança começa aqui================================================
-void obter_coordenadas(multimap<string,Tupla*>& Indice,char* query,int num_documento){
+void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_documento)
+{
 	char* temp;
 	int tf;
 	double idf,W;
@@ -106,33 +106,37 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice,char* query,int num_docum
 	docs[1].Mudar_id("q2.txt");
 	docs[2].Mudar_id("q3.txt");
 
-	for(int j = 0;j < num_documento;j++){
+	for (int j = 0; j < num_documento; j++)
+	{
 		palavra_anterior = "apartamento";
 		adicionado = false;
-		for(auto i = Indice.begin();i != Indice.end();i++){
-			if(((i->first) != palavra_anterior) && (adicionado == false)){
+		for (auto i = Indice.begin(); i != Indice.end(); i++)
+		{
+			if (((i->first) != palavra_anterior) && (adicionado == false))
+			{
 				docs[j].Inserir_coordenada(0.0);
 				palavra_anterior = (i->first);
-			}
 
-			if((i->second->Get_id()) == docs[j].Get_id()){
+				if ((i->second->Get_id()) == docs[j].Get_id())
+				{
 					idf = log10(((double)num_documento + 1)/(double)Indice.count(i->first));
 					W = (i->second->Frequencia())*idf;
 					docs[j].Inserir_coordenada(W);
 					adicionado = true;
-			}else if(adicionado == true && palavra_anterior != i->first){
-					adicionado = false;
-					palavra_anterior = (i->first);
-			}
+				}
+				else 
+					if (adicionado == true && palavra_anterior != i->first)
+					{
+						adicionado = false;
+						palavra_anterior = (i->first);
+					}
+			}		
 		}
 	}
 
-	for(int i = 0;i < num_documento;i++){
+	for (int i = 0; i < num_documento; i++)
 		docs[i].Imprimir_coordenadas();
-	}
-	
 }
-//Termina aqui=======================================================
 
 int main(){
 	int num_documentos;
@@ -140,12 +144,6 @@ int main(){
 	vector<char> Busca;
 	char* blah;
     num_documentos = criar_indice(Indice);
-
-	/*ler_arquivos(stdin,Busca);
-
-	query = new char[Busca.size() + 1];
-	   	for (int i = 0; i < (int)Busca.size(); i++)
-			query[i] = Busca[i];*/
 
 	obter_coordenadas(Indice,blah,num_documentos);
 

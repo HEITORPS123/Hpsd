@@ -28,7 +28,6 @@ void Tupla::operator++(){
     freq_++;
 }
 
-//===================================================================
 Documento::Documento(){
 }
 
@@ -52,10 +51,10 @@ double Documento::operator[](int indice){
     return coordenadas_[indice];
 }
 
-void Documento::Imprimir_coordenadas(void){
+void Documento::Imprimir_coordenadas(){
     cout << docid_ << " = {";
-    for(int i = 0;i < coordenadas_.size();i++){
+    for (int i = 0; i < coordenadas_.size(); i++)
         cout << coordenadas_[i] << ", ";
-    }
+    
     cout << "}\n";
 }
