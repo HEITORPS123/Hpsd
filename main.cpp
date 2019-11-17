@@ -106,26 +106,32 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_doc
 	docs[1].Mudar_id("Documentos/q2.txt");
 	docs[2].Mudar_id("Documentos/q3.txt");
 
-	for (int j = 0; j < num_documento; j++)
+	for (int j = 0; j < num_documento; j++) //Itera por todos os documentos para construir as coordenadas de cada estrutura de dados "Documento"
 	{
+		// Aqui temos que pegar a frequência de cada palavra em cada documento para calcular as coordenadas,
+		// mas como alguns documentos não tem certas palavras, tem algumas modificações. O for itera sobre todas
+		// as entradas do índice, calculando a coordenada se a palavra está presente no documento.Se a palavra
+		// muda , e não é adicionada para determinado documento, significa que não está naquele documento, então
+		// a coordenada é 0.0. Se a palavra não muda, vai iterando para saber se a palavra está no documento. 
 		palavra_anterior = "apartamento";
 		adicionado = false;
-		for (auto i = Indice.begin(); i != Indice.end(); i++)
+		for (auto i = Indice.begin(); i != Indice.end(); i++) 
 		{
-			if (((i->first) != palavra_anterior) && (adicionado == false))
+			if (((i->first) != palavra_anterior) && (adicionado == false)) //Não está presente no documento j a palavra
 			{
 				docs[j].Inserir_coordenada(0.0);
 				palavra_anterior = (i->first);
 			}
-				if ((i->second->Get_id()) == docs[j].Get_id())
+				if ((i->second->Get_id()) == docs[j].Get_id()) //Está presente no documento j
 				{
+					//Os cálculos a seguir são literalmente tirados das orientações do trabalho, com os mesmos nomes de variável
 					idf = log10(((double)num_documento + 1)/(double)Indice.count(i->first));
 					W = (i->second->Frequencia())*idf;
 					docs[j].Inserir_coordenada(W);
 					adicionado = true;
 				}
 				else 
-					if (adicionado == true && palavra_anterior != i->first)
+					if (adicionado == true && palavra_anterior != i->first) //Se a palavra mudou mas foi adicionada,retorna ao estado original
 					{
 						adicionado = false;
 						palavra_anterior = (i->first);
