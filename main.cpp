@@ -136,6 +136,8 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_doc
 
 	for (int i = 0; i < num_documento; i++)
 		docs[i].Imprimir_coordenadas();
+
+	delete [] docs;
 }
 
 int main(){
