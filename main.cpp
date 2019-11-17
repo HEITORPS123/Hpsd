@@ -102,9 +102,9 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_doc
 	bool adicionado;
 
 	docs = new Documento[num_documento];
-	docs[0].Mudar_id("q1.txt");
-	docs[1].Mudar_id("q2.txt");
-	docs[2].Mudar_id("q3.txt");
+	docs[0].Mudar_id("Documentos/q1.txt");
+	docs[1].Mudar_id("Documentos/q2.txt");
+	docs[2].Mudar_id("Documentos/q3.txt");
 
 	for (int j = 0; j < num_documento; j++)
 	{
