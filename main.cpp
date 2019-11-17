@@ -116,7 +116,7 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_doc
 			{
 				docs[j].Inserir_coordenada(0.0);
 				palavra_anterior = (i->first);
-
+			}
 				if ((i->second->Get_id()) == docs[j].Get_id())
 				{
 					idf = log10(((double)num_documento + 1)/(double)Indice.count(i->first));
@@ -130,7 +130,7 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_doc
 						adicionado = false;
 						palavra_anterior = (i->first);
 					}
-			}		
+					
 		}
 	}
 
