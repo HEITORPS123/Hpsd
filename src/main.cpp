@@ -6,7 +6,9 @@
 #include <cmath>
 #include <map>
 #include <algorithm>
+
 #include "tupla.h"
+#include "documento.h"
 
 using std::cout;		using std::cin;        	using std::multimap;
 using std::endl;		using std::vector;		using std::remove;
@@ -65,7 +67,8 @@ int criar_indice(multimap<string,Tupla*>& Indice)
 			// se a palavra não foi encontrada no índice
 			if (Indice.find(palavra) == Indice.end())
 				// adicione uma entrada no multimap do tipo palavra -> (nome do documento, frequencia = 1)
-				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));        
+				Indice.insert(make_pair(palavra,new Tupla(documentos_nomes[num_documento])));
+
 			// caso a palavra tenha sido encontrada, mas em outro documento
 			else
 			{
@@ -129,8 +132,7 @@ void obter_coordenadas(multimap<string,Tupla*>& Indice, char* query, int num_doc
 					{
 						adicionado = false;
 						palavra_anterior = (i->first);
-					}
-					
+					}					
 		}
 	}
 
