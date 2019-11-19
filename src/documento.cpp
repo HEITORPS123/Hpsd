@@ -29,9 +29,9 @@ double Documento::operator[](int indice){
 
 void Documento::Imprimir_coordenadas(){
     cout << docid_ << " = {";
-    for (int i = 0; i < coordenadas_.size(); i++)
+    for (int i = 0; i < coordenadas_.size() - 1; i++)
         cout << coordenadas_[i] << ", ";
 
-    cout << "}\n";
+    cout << coordenadas_[coordenadas_.size()-1] << "}\n";
 }
 
