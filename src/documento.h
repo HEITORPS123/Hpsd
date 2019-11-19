@@ -18,6 +18,7 @@ class Documento{
     private:
         std::string docid_;
         std::vector<double> coordenadas_;
+	friend class Teste;
 };
 
-#endif
+#endif // GUARD_DOCUMENTO_H

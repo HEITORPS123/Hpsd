@@ -16,6 +16,7 @@ class Tupla{
     private:
         std::string docid_;
         int freq_;
+	friend class Teste;
 };
 
-#endif
+#endif //GUARD_TUPLA_H
