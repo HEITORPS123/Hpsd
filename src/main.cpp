@@ -10,9 +10,19 @@
 #include "tupla.h"
 #include "documento.h"
 
-using std::cout;		using std::cin;        	using std::multimap;
+using std::cout;		using std::cin;        	using std::multimap; using std::ofstream;
 using std::endl;		using std::vector;		using std::remove;
-using std::string;		using std::ifstream;	using std::pair
+using std::string;		using std::ifstream;	using std::pair;
+
+void ler_query(){
+    ofstream query;
+    string linha;
+
+    query.open("Documentos/query.txt");
+    getline(cin,linha);
+    query << linha;
+    query.close();   
+}
 
 void ler_arquivos(string Nome_arquivo, vector<char>& data)
 {
@@ -36,6 +46,7 @@ int criar_indice(multimap<string,pair<string,int> >& Indice)
 {
    	// pega o caminho (path) de todos os arquivos dentro da pasta Documentos e coloca no vetor documentos_nomes
   	vector<string> documentos_nomes;
+	documentos_nomes.push_back("Documentos/query.txt");
 	documentos_nomes.push_back("Documentos/q1.txt");
 	documentos_nomes.push_back("Documentos/q2.txt");
 	documentos_nomes.push_back("Documentos/q3.txt");
@@ -75,9 +86,9 @@ int criar_indice(multimap<string,pair<string,int> >& Indice)
 				bool found = false;
 				auto range = Indice.equal_range(palavra);
 				for (auto i = range.first; i != range.second; i++)
-					if ((i->second->first) == documentos_nomes[num_documento])
+					if ((i->second).first == documentos_nomes[num_documento])
 					{
-						++(i->second->second);   // incrementa a frequencia da palavra no arquivo atual
+						++(i->second).second;   // incrementa a frequencia da palavra no arquivo atual
 						found = true;
 					}
 				if (found == false)
@@ -90,7 +101,7 @@ int criar_indice(multimap<string,pair<string,int> >& Indice)
 	
 	cout << "Palavra\t\t |\t Frequencia" << endl;
 	for (auto it = Indice.begin(); it != Indice.end(); it++)
-		cout << it->first << "\t\t\t" << (it->second)->Get_id() << ", " << (it->second->second) << endl;
+		cout << it->first << "\t\t\t" << (it->second).first << ", " << (it->second).second << endl;
 	
 	return num_documento;
 }
@@ -105,9 +116,10 @@ void obter_coordenadas(multimap<string,pair<string,int> >& Indice, char* query, 
 	bool adicionado;
 
 	docs = new Documento[num_documento];
-	docs[0].Mudar_id("Documentos/q1.txt");
-	docs[1].Mudar_id("Documentos/q2.txt");
-	docs[2].Mudar_id("Documentos/q3.txt");
+	docs[0].Mudar_id("Documentos/query.txt");
+	docs[1].Mudar_id("Documentos/q1.txt");
+	docs[2].Mudar_id("Documentos/q2.txt");
+	docs[3].Mudar_id("Documentos/q3.txt");
 
 	for (int j = 0; j < num_documento; j++) //Itera por todos os documentos para construir as coordenadas de cada estrutura de dados "Documento"
 	{
@@ -125,11 +137,11 @@ void obter_coordenadas(multimap<string,pair<string,int> >& Indice, char* query, 
 				docs[j].Inserir_coordenada(0.0);
 				palavra_anterior = (i->first);
 			}
-			if ((i->second->Get_id()) == docs[j].Get_id()) //Está presente no documento j
+			if ((i->second).first == docs[j].Get_id()) //Está presente no documento j
 			{
 				//Os cálculos a seguir são literalmente tirados das orientações do trabalho, com os mesmos nomes de variável
 				idf = log10(((double)num_documento + 1)/(double)Indice.count(i->first));
-				W = (i->second->second)*idf;
+				W = ((i->second).second)*idf;
 				docs[j].Inserir_coordenada(W);
 				adicionado = true;
 			}else if (adicionado == true && palavra_anterior != i->first) //Se a palavra mudou mas foi adicionada,retorna ao estado original
@@ -151,6 +163,7 @@ int main(){
 	multimap<string,pair<string,int> > Indice;
 	vector<char> Busca;
 	char* blah;
+	ler_query();
     num_documentos = criar_indice(Indice);
 
 	obter_coordenadas(Indice,blah,num_documentos);
