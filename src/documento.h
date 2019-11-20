@@ -14,6 +14,7 @@ class Documento{
         void Mudar_id(std::string id);
         double operator[](int indice);
         void Imprimir_coordenadas(void);
+        double Similaridade(Documento& x);
 
     private:
         std::string docid_;

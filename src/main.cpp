@@ -155,6 +155,10 @@ void obter_coordenadas(multimap<string,pair<string,int> >& Indice, char* query, 
 	for (int i = 0; i < num_documento; i++)
 		docs[i].Imprimir_coordenadas();
 
+	for(int i = 1;i < num_documento;i++){
+		cout << "sim("<<docs[i].Get_id() << ",query) = "<< docs[i].Similaridade(docs[0]) << endl;
+	}
+
 	delete [] docs;
 }
 
