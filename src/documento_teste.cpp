@@ -40,11 +40,16 @@ TEST_SUITE("documento") {
 
 	TEST_CASE("Inserir_coordenada(double)") {
 		Documento doc;
-		doc.Inserir_coordenada
+		doc.Inserir_coordenada(0.6879);
+		doc.Inserir_coordenada(-1.3929);
+		CHECK(Teste::Coordenadas(doc)[0] == 0.6879);
+		CHECK(Teste::Coordenadas(doc)[1] == -1.3929);
 	}
 
 	TEST_CASE("Mudar_id(string)") {
-		
+		Documendo doc("um");
+		doc.Mudar_id("dois");
+		CHECK(Teste::Docid(doc) == "dois");
 	}
 
 	TEST_CASE("Imprimir_coordenadas(void)") {
