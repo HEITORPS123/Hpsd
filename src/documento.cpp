@@ -42,29 +42,28 @@ void Documento::Obter_coordenadas(Indice_invertido& Indice)
 	// mas como alguns documentos não tem certas palavras, tem algumas modificações. O for itera sobre todas
 	// as entradas do índice, calculando a coordenada se a palavra está presente no documento.Se a palavra
 	// muda , e não é adicionada para determinado documento, significa que não está naquele documento, então
-	// a coordenada é 0.0. Se a palavra não muda, vai iterando para saber se a palavra está no documento. 
-	palavra_anterior = (Indice.begin() -> first);
-	adicionado = false;
-	for (auto i = Indice.begin(); i != Indice.end(); i++) 
+	// a coordenada é 0.0. Se a palavra não muda, vai iterando para saber se a palavra está no documento.
+	bool possui = false;	
+	for (auto it = Indice.begin(); it != Indice.end();)
 	{
-		if (((i->first) != palavra_anterior) && (adicionado == false)) //Não está presente no documento j a palavra
+		auto it2 = it;
+		while (it->first == it2->first)
 		{
-			Inserir_coordenada(0.0);
-			palavra_anterior = (i->first);
+			if ((it2->second).first == Get_id())
+				possui = true;			
+			it2++;
 		}
-		if ((i->second).first == Get_id()) //Está presente no documento j
+
+		if (!possui)
+			Inserir_coordenada(0.0);
+		else
 		{
-			//Os cálculos a seguir são literalmente tirados das orientações do trabalho, com os mesmos nomes de variável
-			idf = log10(((double)Indice.Numdocs() + 1)/(double)Indice.count(i->first));
-			W = ((i->second).second)*idf;
+			idf = log10(((double)Indice.Numdocs() + 1)/(double)Indice.count(it->first));
+			W = ((it->second).second)*idf;
 			Inserir_coordenada(W);
-			adicionado = true;
-		}else if (adicionado == true && palavra_anterior != i->first) //Se a palavra mudou mas foi adicionada,retorna ao estado original
-		{
-			adicionado = false;
-			palavra_anterior = (i->first);
-		}					
-		
+			possui = false;
+		}
+		it = it2;
 	}
 
 	Imprimir_coordenadas();
