@@ -6,21 +6,26 @@
 #include <vector>
 #include <iostream>
 
-class Documento{
+using std::string;
+using std::vector;
+
+class Documento
+{
     public:
         Documento();
-        Documento(std::string id);
-        std::string Get_id();
+        Documento(string id);
+        string Get_id();
         void Inserir_coordenada(double coord);
-        void Mudar_id(std::string id);
+        void Mudar_id(string id);
         double operator[](int indice);
         void Obter_coordenadas(Indice_invertido& Indice);
-        void Imprimir_coordenadas(void);
+        void Imprimir_coordenadas();
         double Similaridade(Documento& x);
 
     private:
-        std::string docid_;
-        std::vector<double> coordenadas_;
+        string docid_;
+        vector<double> coordenadas_;
+	
 	friend class Teste;
 };
 

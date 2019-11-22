@@ -36,25 +36,23 @@ double Documento::operator[](int indice)
 
 void Documento::Obter_coordenadas(Indice_invertido& Indice)
 {
-	char* temp;
-	int tf;
-	double idf,W;
-	string palavra_anterior;
-	bool adicionado;
-
 	// Aqui temos que pegar a frequência de cada palavra em cada documento para calcular as coordenadas,
 	// mas como alguns documentos não tem certas palavras, tem algumas modificações. O for itera sobre todas
 	// as entradas do índice, calculando a coordenada se a palavra está presente no documento.Se a palavra
 	// muda , e não é adicionada para determinado documento, significa que não está naquele documento, então
 	// a coordenada é 0.0. Se a palavra não muda, vai iterando para saber se a palavra está no documento.
-	bool possui = false;	
+	bool possui = false;
+	auto it_local = Indice.begin();
 	for (auto it = Indice.begin(); it != Indice.end();)
 	{
 		auto it2 = it;
 		while (it->first == it2->first)
 		{
 			if ((it2->second).first == Get_id())
-				possui = true;			
+			{
+				possui = true;
+				it_local = it2;			
+			}			
 			it2++;
 		}
 
@@ -62,15 +60,13 @@ void Documento::Obter_coordenadas(Indice_invertido& Indice)
 			Inserir_coordenada(0.0);
 		else
 		{
-			idf = log10(((double)Indice.Numdocs() + 1)/(double)Indice.count(it->first));
-			W = ((it->second).second)*idf;
+			double idf = log10(((double)Indice.Numdocs())/(double)Indice.count(it_local->first));
+			double W = ((it_local->second).second)*idf;
 			Inserir_coordenada(W);
 			possui = false;
 		}
 		it = it2;
 	}
-
-	Imprimir_coordenadas();
 }
 
 void Documento::Imprimir_coordenadas()

@@ -13,24 +13,29 @@ using std::string;  using std::ifstream;
 using std::cout;    using std::remove;
 using std::endl;    using std::ofstream;
 
-vector<string> listar_arquivos()
+// função auxiliar
+vector<string> listar_arquivos(string path)
 {
 	vector<string> vec;
-	vec.push_back("Documentos/query.txt");
-	std::string path = "Documentos/";
+	string query_path = path+"query.txt";
+	vec.push_back(query_path);
 	for (const auto & entry : fs::directory_iterator(path))
 	{
 		string entry_path = entry.path();
-		if (entry_path != "Documentos/query.txt")		
+		if (entry_path != query_path)		
 			vec.push_back(entry.path());
 	}
 
 	return vec;
 }
 
-Indice_invertido::Indice_invertido(){
+Indice_invertido::Indice_invertido()
+{}
+
+Indice_invertido::Indice_invertido(string path)
+{
     // pega o caminho (path) de todos os arquivos dentro da pasta Documentos e coloca no vetor documentos_nomes
-  	vector<string> documentos_nomes = listar_arquivos();
+  	vector<string> documentos_nomes = listar_arquivos(path);
 
 	// loop que passa uma vez por cada documento dentro da pasta Documentos
 	numDocumentos_ = 0;
@@ -79,11 +84,6 @@ Indice_invertido::Indice_invertido(){
         data_.clear();
 		numDocumentos_++;
 	}
-	
-	cout << "Palavra\t\t |\t Frequencia" << endl;
-	for (auto it = indice_.begin(); it != indice_.end(); it++)
-		cout << it->first << "\t\t\t" << (it->second).first << ", " << (it->second).second << endl;
-
 }
 
 void Indice_invertido::ler_arquivo(string Nome_arquivo){

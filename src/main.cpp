@@ -10,6 +10,8 @@ using std::cout;		using std::cin;
 using std::endl;		using std::ofstream;
 using std::string;		using std::vector;
 
+const string path = "Documentos/";
+
 void ler_query()
 {
     ofstream query;
@@ -22,14 +24,14 @@ void ler_query()
 }
 
 // apesar de estar definida em indice.h, precisamos declará-la aqui também!
-vector<string> listar_arquivos();
+vector<string> listar_arquivos(string path);
 
 int main()
 {
 	ler_query();
-	Indice_invertido Indice;
+	Indice_invertido Indice(path);
 	Documento* docs;
-	vector<string> arquivos = listar_arquivos();
+	vector<string> arquivos = listar_arquivos(path);
 	int quantidade = arquivos.size();
 
 	docs = new Documento[quantidade];
