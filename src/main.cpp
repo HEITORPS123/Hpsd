@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <fstream>
 #include <cstring>
 #include <string>
@@ -7,9 +8,10 @@
 
 using std::cout;		using std::cin;
 using std::endl;		using std::ofstream;
-using std::string;			
+using std::string;		using std::vector;
 
-void ler_query(){
+void ler_query()
+{
     ofstream query;
     string linha;
 
@@ -19,23 +21,28 @@ void ler_query(){
     query.close();   
 }
 
-int main(){
+// apesar de estar definida em indice.h, precisamos declará-la aqui também!
+vector<string> listar_arquivos();
+
+int main()
+{
 	ler_query();
 	Indice_invertido Indice;
 	Documento* docs;
+	vector<string> arquivos = listar_arquivos();
+	int quantidade = arquivos.size();
 
-	docs = new Documento[4];
-	docs[0].Mudar_id("Documentos/query.txt");
-	docs[1].Mudar_id("Documentos/q1.txt");
-	docs[2].Mudar_id("Documentos/q2.txt");
-	docs[3].Mudar_id("Documentos/q3.txt");
+	docs = new Documento[quantidade];
 	
+	int i = 0;
+	for (auto it = arquivos.begin(); it != arquivos.end(); it++, i++)
+		docs[i].Mudar_id(*it);
 
-	for(int i = 0;i < 4;i++)
+	for(int i = 0; i < quantidade; i++)
 		docs[i].Obter_coordenadas(Indice);
 
-	for(int i = 0;i < 4;i++)
-		cout << "sim(" << docs[i].Get_id() << ",query) = " << docs[i].Similaridade(docs[0]) << endl;
+	for(int i = 0;i < quantidade;i++)
+		cout << "sim(" << docs[i].Get_id() << ",Documentos/query.txt) = " << docs[i].Similaridade(docs[0]) << endl;
 
     cout << endl;
     return 0;

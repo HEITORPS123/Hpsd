@@ -5,19 +5,33 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 using std::string;  using std::ifstream;
 using std::cout;    using std::remove;
 using std::endl;    using std::ofstream;
 
+vector<string> listar_arquivos()
+{
+	vector<string> vec;
+	vec.push_back("Documentos/query.txt");
+	std::string path = "Documentos/";
+	for (const auto & entry : fs::directory_iterator(path))
+	{
+		string entry_path = entry.path();
+		if (entry_path != "Documentos/query.txt")		
+			vec.push_back(entry.path());
+	}
+
+	return vec;
+}
+
 Indice_invertido::Indice_invertido(){
     // pega o caminho (path) de todos os arquivos dentro da pasta Documentos e coloca no vetor documentos_nomes
-  	vector<string> documentos_nomes;
-	documentos_nomes.push_back("Documentos/query.txt");
-	documentos_nomes.push_back("Documentos/q1.txt");
-	documentos_nomes.push_back("Documentos/q2.txt");
-	documentos_nomes.push_back("Documentos/q3.txt");
-	
+  	vector<string> documentos_nomes = listar_arquivos();
+
 	// loop que passa uma vez por cada documento dentro da pasta Documentos
 	numDocumentos_ = 0;
 	while (numDocumentos_ < (int)documentos_nomes.size())
