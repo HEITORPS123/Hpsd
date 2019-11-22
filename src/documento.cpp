@@ -80,7 +80,7 @@ void Documento::Imprimir_coordenadas()
 
 double Documento::Similaridade(Documento& query)
 {
-    long double somatorio_produto,somatorio_quadrado1,somatorio_quadrado2,cos;
+    double somatorio_produto,somatorio_quadrado1,somatorio_quadrado2,cos;
     
     somatorio_produto = 0.0;
     for(int i = 0; i < coordenadas_.size(); i++)

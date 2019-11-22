@@ -2,8 +2,8 @@
 //|==================== UNIVERSIDADE FEDERAL DE MINAS GERAIS =====================|
 //|###############################################################################|
 //| Nomes dos integrantes do Grupo: Heitor de Paula Santos Damasceno - 2019006671 |
-//|                                 Antonio Isaac Lima                            |
-//|									Arthur Resende Luz                            |
+//|                                 Antônio Isaac Silva Lima - 2019006361         |
+//|									Arthur Luz  -  2019006396                     |
 //| Turma: TN                                                                     |
 //|-------------------------------------------------------------------------------|     
 //|          TRABALHO PRÁTICO DE PROGRAÇÃO E DESENVOLVIMENTO DE SOFTWARE II       |
@@ -39,7 +39,7 @@ vector<string> listar_arquivos(string path);
 
 int main()
 {
-	cout << "Busca: ";
+	cout << "Busca\n> ";
 	ler_query();
 	Indice_invertido Indice(path);
 	Documento* docs;
@@ -55,18 +55,31 @@ int main()
 	for(int i = 0; i < quantidade; i++)
 		docs[i].Obter_coordenadas(Indice);
 
-	map<long double, string> ranking;
+	map<double, string> ranking;
 	for(int i = 0;i < quantidade;i++){
-		long double Sim = docs[i].Similaridade(docs[0]);
-		cout << "sim(" << docs[i].Get_id() << ",Documentos/query.txt) = " << Sim << endl;
-		ranking.insert(make_pair(Sim,docs[i].Get_id()));
+		double sim = docs[0].Similaridade(docs[i]);
+		ranking.insert(make_pair(sim,docs[i].Get_id()));
 	}
 
-	cout << "CLASSIFICAÇÃO DOS ARQUIVOS:" << endl;
-	for(auto it = ranking.begin();it != ranking.end();i++)
-		cout << it->second << endl;
+	int mostrar_pag;
+	cout << "Quantos arquivos, no máximo, serão mostrados por vez\n> ";
+  	cin >> mostrar_pag;
+	cin.ignore();	
 
-    cout << endl;
+	int ij = 0;
+	cout << "\nCLASSIFICAÇÃO DOS ARQUIVOS:" << endl;
+	for(auto it = ranking.rbegin(); it != ranking.rend(); it++)
+	{
+		if (it->first != 0.0 && it->second != path+"query.txt")
+			cout << it->second << "\t(" << it->first << ")\n";
+		if (ij == mostrar_pag)
+		{
+			cin.ignore();
+			ij=0;
+		}
+		ij++;
+	}
+   cout << endl;
 
-    return 0;
+   return 0;
 }
