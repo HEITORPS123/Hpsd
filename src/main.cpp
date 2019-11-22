@@ -1,3 +1,14 @@
+//|###############################################################################|
+//|==================== UNIVERSIDADE FEDERAL DE MINAS GERAIS =====================|
+//|###############################################################################|
+//| Nomes dos integrantes do Grupo: Heitor de Paula Santos Damasceno - 2019006671 |
+//|                                 Antonio Isaac Lima                            |
+//|									Arthur Resende Luz                            |
+//| Turma: TN                                                                     |
+//|-------------------------------------------------------------------------------|     
+//|          TRABALHO PRÁTICO DE PROGRAÇÃO E DESENVOLVIMENTO DE SOFTWARE II       |
+//|-------------------------------------------------------------------------------|
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -6,7 +17,7 @@
 
 #include "documento.h"
 
-using std::cout;		using std::cin;
+using std::cout;		using std::cin;		using std::map;
 using std::endl;		using std::ofstream;
 using std::string;		using std::vector;
 
@@ -28,6 +39,7 @@ vector<string> listar_arquivos(string path);
 
 int main()
 {
+	cout << "Busca: ";
 	ler_query();
 	Indice_invertido Indice(path);
 	Documento* docs;
@@ -43,9 +55,18 @@ int main()
 	for(int i = 0; i < quantidade; i++)
 		docs[i].Obter_coordenadas(Indice);
 
-	for(int i = 0;i < quantidade;i++)
-		cout << "sim(" << docs[i].Get_id() << ",Documentos/query.txt) = " << docs[i].Similaridade(docs[0]) << endl;
+	map<long double, string> ranking;
+	for(int i = 0;i < quantidade;i++){
+		long double Sim = docs[i].Similaridade(docs[0]);
+		cout << "sim(" << docs[i].Get_id() << ",Documentos/query.txt) = " << Sim << endl;
+		ranking.insert(make_pair(Sim,docs[i].Get_id()));
+	}
+
+	cout << "CLASSIFICAÇÃO DOS ARQUIVOS:" << endl;
+	for(auto it = ranking.begin();it != ranking.end();i++)
+		cout << it->second << endl;
 
     cout << endl;
+
     return 0;
 }
